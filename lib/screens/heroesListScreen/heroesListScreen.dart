@@ -12,9 +12,6 @@ class HeroesListScreen extends StatefulWidget {
 }
 
 class _HeroesListScreenState extends State<HeroesListScreen> {
-  List items = getDummyList();
-  final imageUrl =
-      "https://is2-ssl.mzstatic.com/image/thumb/Video2/v4/e1/69/8b/e1698bc0-c23d-2424-40b7-527864c94a8e/pr_source.lsr/268x0w.png";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,20 +27,19 @@ class _HeroesListScreenState extends State<HeroesListScreen> {
                   if (snapshot.hasData) {
                     return Container(
                       child: ListView.builder(
-                        itemCount: items.length,
+                        itemCount: 10,
                         itemBuilder: (context, index) {
                           return GestureDetector(
-                            key: Key(items[index]),
-                            onTap: () => {print('On Tap Works!')},
-                            onDoubleTap: () {
+                            key: Key(snapshot.data[index].name),
+                            onTap: () => {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          HeroDetailsScreen()));
+                                          HeroDetailsScreen(hero: snapshot.data[index])))
                             },
                             child: BuildListCard(
-                                imageUrl: imageUrl, items: items, index: index),
+                                items: snapshot.data, index: index),
                           );
                         },
                       ),
@@ -83,11 +79,11 @@ class BuildListCard extends StatelessWidget {
   const BuildListCard({
     @required this.index,
     Key key,
-    @required this.imageUrl,
+    
     @required this.items,
   }) : super(key: key);
 
-  final String imageUrl;
+  
   final List items;
   final int index;
 
@@ -97,41 +93,20 @@ class BuildListCard extends StatelessWidget {
         elevation: 4,
         child: Row(
           children: <Widget>[
-            _buildCardImage(imageUrl: imageUrl),
+            _buildCardImage(imageUrl: (items[index].thumbnail['path']+'.'+items[index].thumbnail['extension']).toString()),
             Container(
               height: 100,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(10, 2, 0, 0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      items[index],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 3, 0, 3),
-                      child: Container(
-                        width: 30,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.teal),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        child: Text(
-                          "3D",
-                          textAlign: TextAlign.center,
-                        ),
+                      items[index].name,
+                      style: TextStyle(
+                        fontSize: 20
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 5, 0, 2),
-                      child: Container(
-                          width: 260,
-                          child: Text(
-                              "His genius finally recognized by his idol Chester",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Color.fromARGB(255, 48, 48, 54)))),
-                    )
                   ],
                 ),
               ),
